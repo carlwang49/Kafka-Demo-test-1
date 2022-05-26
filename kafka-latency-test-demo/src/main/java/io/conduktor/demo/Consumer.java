@@ -4,12 +4,14 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.clients.consumer.internals.KafkaConsumerMetrics;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Properties;
 
 public class Consumer {
@@ -34,27 +36,33 @@ public class Consumer {
 
         //low latency setting
 
-        properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "0");
-        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "0");
-        properties.setProperty("enable.auto.commit", "false");
+        //properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "0");
+        //properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "0");
+        //properties.setProperty(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "0");
+        //properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
 
         //create consumer
         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(properties);
 
-        //subscribe consumer to our topics)
-        consumer.subscribe(Arrays.asList(topic));
+        //subscribe consumer to our topic(s)
+        consumer.subscribe(Collections.singleton(topic));
+
 
         //poll for new data
         while (true) {
+            log.info("Polling...");
             ConsumerRecords<String, String> records =
-                    consumer.poll(Duration.ofMillis(500));
-            long currentTime = System.currentTimeMillis();
-
-            for (ConsumerRecord<String, String> record : records) {
-                System.out.println("Value: " + record.value() +
-                        "   Timestamp: " + record.timestamp() +
-                        "   Latency: " + (currentTime - record.timestamp()) + " ms");
+                    consumer.poll(Duration.ofMillis(10000));
+            System.out.println("==================");
+            if (records.count() > 0) {
+                long currentTime = System.currentTimeMillis();
+                for (ConsumerRecord<String, String> record : records) {
+                    System.out.println("Value: " + record.value() +
+                            "   record_timestamp: " + record.timestamp() +
+                            "   Latency: " + (currentTime - record.timestamp()) + " ms");
+                }
             }
+            System.out.println("+++++++++++++++++++");
         }
     }
 }
