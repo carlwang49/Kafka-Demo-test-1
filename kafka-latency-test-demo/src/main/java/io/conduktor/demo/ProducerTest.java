@@ -50,7 +50,7 @@ public class ProducerTest {
                         " , record_timestamp " + recordMetadata.timestamp());
             }else {
                 System.out.println("Wrong producer timestamp!");
-                System.out.println("please press record again! ");
+                System.out.println("please enter your message again! ");
                 System.out.println("============================");
             }
     }
@@ -60,10 +60,9 @@ public class ProducerTest {
         Scanner scanner = new Scanner(System.in);
         ProducerTest messageProducer = new ProducerTest(propsMap());
         while (true) {
-            System.out.print("press you message: ");
+            System.out.print("enter your message: ");
             String message = scanner.next();
             messageProducer.publishMessageSync(null, message);
         }
-
     }
 }
