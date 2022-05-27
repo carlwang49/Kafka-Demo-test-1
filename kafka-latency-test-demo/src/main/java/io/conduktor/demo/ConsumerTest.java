@@ -21,9 +21,8 @@ public class ConsumerTest {
         String groupId = "my-group";
         String topic = "second-topic";
 
-        log.info("consumer properties setting");
-
         //consumer properties setting
+        log.info("consumer properties setting");
 
         Properties properties = new Properties();
         properties.setProperty(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -35,7 +34,7 @@ public class ConsumerTest {
         //low latency setting
 
         properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "0");
-        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1");
+        properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "0");
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
 
         //create consumer
@@ -48,7 +47,7 @@ public class ConsumerTest {
         while (true) {
             log.info("Polling...");
             ConsumerRecords<String, String> records =
-                    consumer.poll(Duration.ofMillis(10000));
+                    consumer.poll(Duration.ofSeconds(100));
             long currentTime = System.currentTimeMillis();
             System.out.println("==========================================");
             System.out.println("current_record_count: " + records.count());
