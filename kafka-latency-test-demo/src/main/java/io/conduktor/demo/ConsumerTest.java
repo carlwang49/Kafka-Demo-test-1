@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.Properties;
 
 public class ConsumerTest {
-    private static final Logger log = LoggerFactory.getLogger(Consumer.class.getSimpleName());
+    private static final Logger log = LoggerFactory.getLogger(ConsumerTest.class.getSimpleName());
 
     public static void main(String[] args) {
 
@@ -31,13 +31,11 @@ public class ConsumerTest {
         properties.setProperty(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
         properties.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         properties.setProperty(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
-        properties.setProperty("enable.auto.commit", "false");
 
         //low latency setting
 
         properties.setProperty(ConsumerConfig.FETCH_MAX_WAIT_MS_CONFIG, "0");
         properties.setProperty(ConsumerConfig.FETCH_MIN_BYTES_CONFIG, "1");
-        properties.setProperty(ConsumerConfig.FETCH_MAX_BYTES_CONFIG, "1");
         properties.setProperty(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
 
         //create consumer
@@ -53,11 +51,10 @@ public class ConsumerTest {
                     consumer.poll(Duration.ofMillis(10000));
             long currentTime = System.currentTimeMillis();
             System.out.println("==========================================");
-            System.out.println("record_count: " + records.count());
+            System.out.println("current_record_count: " + records.count());
             for (ConsumerRecord<String, String> record : records) {
-                System.out.println("Value: " + record.value() +
+                System.out.println("record_value: " + record.value() +
                         "   record_timestamp: " + record.timestamp() +
-                        "   current_timestamp: " + currentTime +
                         "   Latency: " + (currentTime - record.timestamp()) + " ms");
             }
             System.out.println("==========================================");
