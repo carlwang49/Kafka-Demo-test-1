@@ -1,0 +1,4 @@
+rootProject.name = 'Kafka-Demo'
+include 'kafka-latency-test-demo'
+include 'Kafka-wikimedia-test'
+
